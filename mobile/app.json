@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "SiteWatch",
+    "slug": "sitewatch",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "sitewatch",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1E3A5F"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.sitewatch.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "SiteWatch needs camera access to capture incident photos.",
+        "NSPhotoLibraryUsageDescription": "SiteWatch needs photo library access to attach photos to incident reports.",
+        "NSLocationWhenInUseUsageDescription": "SiteWatch uses your location to tag incident reports with GPS coordinates."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1E3A5F"
+      },
+      "package": "com.sitewatch.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#1E3A5F"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow SiteWatch to access your camera."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
