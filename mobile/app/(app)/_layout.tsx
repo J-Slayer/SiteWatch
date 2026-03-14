@@ -33,7 +33,7 @@ export default function AppLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: Colors.primary[600],
+          tabBarActiveTintColor: '#FF8C00',
           tabBarInactiveTintColor: Colors.gray[400],
           tabBarStyle: {
             borderTopColor: Colors.border,
@@ -64,13 +64,12 @@ export default function AppLayout() {
         <Tabs.Screen
           name="reports/new/index"
           options={{
-            title: 'Report',
+            title: 'New Report',
             tabBarIcon: ({ color }) => (
               <View style={styles.newButton}>
                 <Text style={{ fontSize: 22, color: Colors.white }}>＋</Text>
               </View>
             ),
-            tabBarLabel: 'New Report',
           }}
         />
         <Tabs.Screen
@@ -80,6 +79,8 @@ export default function AppLayout() {
             tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>👤</Text>,
           }}
         />
+        {/* Hide dynamic routes from the tab bar */}
+        <Tabs.Screen name="reports/[id]/index" options={{ href: null }} />
       </Tabs>
     </View>
   );
@@ -97,11 +98,11 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: Colors.primary[600],
+    backgroundColor: '#FF8C00',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    shadowColor: Colors.primary[600],
+    shadowColor: '#FF8C00',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 8,

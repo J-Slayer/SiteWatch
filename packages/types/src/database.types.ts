@@ -172,6 +172,7 @@ export interface PhotoAnnotation {
   height?: number;
   endX?: number;
   endY?: number;
+  points?: { x: number; y: number }[]; // freehand path points
   text?: string;
   color: string;
   strokeWidth: number;

@@ -6,6 +6,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
+import { getReportsByType, getDailyTrend, getReportsBySeverity } from '@/lib/services/reports.service';
+import { ReportsByTypeChart } from '@/components/analytics/ReportsByTypeChart';
+import { SeverityTrendChart } from '@/components/analytics/SeverityTrendChart';
+import { SeverityBreakdownChart } from '@/components/analytics/SeverityBreakdownChart';
+import { AnimatedStatCard } from '@/components/ui/AnimatedStatCard';
 
 export const metadata = { title: 'Overview' };
 
@@ -93,38 +98,43 @@ export default async function OverviewPage() {
     );
   }
 
-  const [stats, recentReports] = await Promise.all([
+  const [stats, recentReports, reportsByType, dailyTrend, reportsBySeverity] = await Promise.all([
     getStats(companyId),
     getRecentReports(companyId),
+    getReportsByType(companyId),
+    getDailyTrend(companyId),
+    getReportsBySeverity(companyId),
   ]);
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Page title */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">
-          Good morning, {profile?.full_name?.split(' ')[0] ?? 'there'} 👋
-        </h1>
-        <p className="text-gray-500 text-sm mt-1">Here&apos;s what&apos;s happening on your sites.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1
+            className="text-2xl font-bold text-gray-900"
+            style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+          >
+            Good morning, {profile?.full_name?.split(' ')[0] ?? 'there'} 👋
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">Here&apos;s what&apos;s happening on your sites.</p>
+        </div>
+        <div
+          className="hidden sm:flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full"
+          style={{ background: 'rgba(245,158,11,0.1)', color: '#d97706' }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          Live
+        </div>
       </div>
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <StatCard
-          label="Total Reports"
-          value={stats.total}
-          icon="📋"
-          className="col-span-1"
-        />
-        <StatCard label="Open" value={stats.open} icon="🔵" />
-        <StatCard
-          label="Critical"
-          value={stats.critical}
-          icon="🔴"
-          highlight={stats.critical > 0}
-        />
-        <StatCard label="This Week" value={stats.thisWeek} icon="📅" />
-        <StatCard label="Active Sites" value={stats.activeProjects} icon="🏗️" />
+        <AnimatedStatCard label="Total Reports"  value={stats.total}          icon="📋" index={0} color="slate" />
+        <AnimatedStatCard label="Open"           value={stats.open}           icon="🔵" index={1} color="blue" />
+        <AnimatedStatCard label="Critical"       value={stats.critical}       icon="🔴" index={2} highlight={stats.critical > 0} color="red" />
+        <AnimatedStatCard label="This Week"      value={stats.thisWeek}       icon="📅" index={3} color="amber" />
+        <AnimatedStatCard label="Active Sites"   value={stats.activeProjects} icon="🏗️" index={4} color="green" />
       </div>
 
       {/* Recent reports */}
@@ -141,9 +151,10 @@ export default async function OverviewPage() {
 
         <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
           {recentReports.length === 0 ? (
-            <div className="px-6 py-10 text-center text-gray-400">
-              <p className="text-3xl mb-2">📋</p>
-              <p className="text-sm">No reports yet.</p>
+            <div className="px-6 py-12 text-center">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gray-50 text-3xl mb-3">📋</div>
+              <p className="text-sm font-semibold text-gray-500">No reports yet</p>
+              <p className="text-xs text-gray-400 mt-1">Reports submitted by your field team will appear here.</p>
             </div>
           ) : (
             recentReports.map((report) => (
@@ -170,44 +181,39 @@ export default async function OverviewPage() {
         </div>
       </div>
 
-      {/* Charts placeholder for Phase 4 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartPlaceholder title="Reports by Type" />
-        <ChartPlaceholder title="Severity Trend (Last 30 Days)" />
+      {/* Live analytics charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {[
+          { title: 'Reports by Type',    subtitle: 'Last 30 days', icon: '📊', chart: <ReportsByTypeChart data={reportsByType} />,       hasData: reportsByType.length > 0 },
+          { title: 'Severity Breakdown', subtitle: 'Last 30 days', icon: '🎯', chart: <SeverityBreakdownChart data={reportsBySeverity} />, hasData: reportsBySeverity.length > 0 },
+          { title: 'Incident Trend',     subtitle: 'Last 30 days', icon: '📈', chart: <SeverityTrendChart data={dailyTrend} />,            hasData: dailyTrend.length > 0 },
+        ].map((card) => (
+          <div key={card.title} className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-base">{card.icon}</span>
+              <h3
+                className="text-sm font-semibold text-gray-900"
+                style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+              >
+                {card.title}
+              </h3>
+            </div>
+            <p className="text-xs text-gray-400 mb-4">{card.subtitle}</p>
+            {card.hasData ? card.chart : (
+              <div className="flex flex-col items-center justify-center h-36 gap-2">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-xl">{card.icon}</div>
+                <p className="text-xs text-gray-400 font-medium">No data yet</p>
+                <p className="text-xs text-gray-300">Start submitting reports to see analytics</p>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
-
-function StatCard({
-  label,
-  value,
-  icon,
-  highlight = false,
-  className = '',
-}: {
-  label: string;
-  value: number;
-  icon: string;
-  highlight?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`bg-white rounded-xl border ${
-        highlight ? 'border-red-300 bg-red-50' : 'border-gray-200'
-      } p-5 ${className}`}
-    >
-      <div className="text-2xl mb-2">{icon}</div>
-      <p className={`text-2xl font-bold ${highlight ? 'text-red-600' : 'text-gray-900'}`}>
-        {value}
-      </p>
-      <p className="text-xs text-gray-500 mt-0.5">{label}</p>
-    </div>
-  );
-}
 
 const SEVERITY_STYLES: Record<string, string> = {
   low: 'bg-green-100 text-green-700',
@@ -249,13 +255,3 @@ function StatusPill({ status }: { status: string }) {
   );
 }
 
-function ChartPlaceholder({ title }: { title: string }) {
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
-      <div className="h-40 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
-        <p className="text-xs text-gray-400">Chart coming in Phase 4</p>
-      </div>
-    </div>
-  );
-}

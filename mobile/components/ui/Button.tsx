@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   // Variants
   primary: {
-    backgroundColor: Colors.primary[600],
+    backgroundColor: Colors.accent[400],
   },
   secondary: {
     backgroundColor: Colors.primary[50],

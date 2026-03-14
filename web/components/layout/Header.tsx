@@ -28,22 +28,29 @@ export function Header({ user, pageTitle }: HeaderProps) {
       .toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? '?';
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
-      {pageTitle && (
-        <h1 className="text-lg font-semibold text-gray-900">{pageTitle}</h1>
-      )}
-      {!pageTitle && <div />}
+    <header className="h-16 bg-white border-b border-gray-100 shadow-sm flex items-center justify-between px-6 shrink-0">
+      {pageTitle ? (
+        <h1
+          className="text-lg font-semibold text-gray-900"
+          style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+        >
+          {pageTitle}
+        </h1>
+      ) : <div />}
 
-      <div className="flex items-center gap-4">
-        {/* Notifications — Phase 4 */}
-        <button className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-500">
+      <div className="flex items-center gap-3">
+        {/* Notifications */}
+        <button className="relative w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600">
           🔔
         </button>
 
-        {/* User menu */}
+        {/* Divider */}
+        <div className="w-px h-6 bg-gray-200" />
+
+        {/* User info + avatar */}
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-gray-900 leading-tight">
+            <p className="text-sm font-semibold text-gray-800 leading-tight">
               {user?.user_metadata?.full_name ?? user?.email ?? '—'}
             </p>
             <p className="text-xs text-gray-400">{user?.email}</p>
@@ -51,7 +58,8 @@ export function Header({ user, pageTitle }: HeaderProps) {
           <button
             onClick={handleSignOut}
             title="Sign out"
-            className="w-9 h-9 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-bold hover:bg-primary-700 transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold transition-opacity hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #f59e0b, #ea580c)' }}
           >
             {initials}
           </button>

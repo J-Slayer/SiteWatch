@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
+import { PageTransition } from '@/components/ui/PageTransition';
 
 export default async function DashboardLayout({
   children,
@@ -24,13 +25,15 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      <Sidebar />
+      <Sidebar user={user} />
 
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header user={user} />
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex-1 overflow-y-auto">
+          <PageTransition>{children}</PageTransition>
+        </main>
       </div>
     </div>
   );

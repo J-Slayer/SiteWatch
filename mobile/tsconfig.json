@@ -3,14 +3,19 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@sitewatch/types": ["../packages/types/src/index.ts"],
-      "@/*": ["./*"]
+      "@sitewatch/types": [
+        "../packages/types/src/index.ts"
+      ],
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.d.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    ".expo/types/**/*.ts"
   ]
 }

@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
+  Image,
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
@@ -75,6 +76,9 @@ export default function RegisterScreen() {
       style={styles.flex}
     >
       <StatusBar style="light" />
+      {/* Background glow orbs */}
+      <View style={styles.glowTop} pointerEvents="none" />
+      <View style={styles.glowBottom} pointerEvents="none" />
       <ScrollView
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
@@ -82,8 +86,11 @@ export default function RegisterScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>🦺</Text>
-          <Text style={styles.title}>SiteWatch</Text>
+          <Image
+            source={require('../../assets/images/Logo2.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>Create your account</Text>
         </View>
 
@@ -111,6 +118,8 @@ export default function RegisterScreen() {
 
         {/* Form */}
         <View style={styles.formCard}>
+          <View style={styles.cardAccent} />
+          <View style={styles.formCardInner}>
           <Controller
             control={control}
             name="fullName"
@@ -227,6 +236,7 @@ export default function RegisterScreen() {
             size="lg"
             style={styles.submitButton}
           />
+          </View>
         </View>
 
         {/* Login link */}
@@ -246,7 +256,27 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: Colors.primary[600],
+    backgroundColor: Colors.primary[800],
+  },
+  glowTop: {
+    position: 'absolute',
+    top: -80,
+    right: -80,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: '#FF8C00',
+    opacity: 0.12,
+  },
+  glowBottom: {
+    position: 'absolute',
+    bottom: 60,
+    left: -100,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: '#1E3A5F',
+    opacity: 0.5,
   },
   container: {
     flexGrow: 1,
@@ -258,17 +288,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.xl,
   },
-  logo: { fontSize: 44, marginBottom: Spacing.sm },
-  title: {
-    fontSize: FontSize['3xl'],
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-    letterSpacing: 1,
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: Spacing.md,
   },
   subtitle: {
     fontSize: FontSize.base,
     color: Colors.primary[200],
     marginTop: Spacing.xs,
+    letterSpacing: 0.3,
   },
   typeSelector: {
     flexDirection: 'row',
@@ -292,11 +321,24 @@ const styles = StyleSheet.create({
     color: Colors.primary[200],
   },
   typeTextActive: {
-    color: Colors.primary[600],
+    color: Colors.accent[400],
+    fontWeight: FontWeight.semibold,
   },
   formCard: {
     backgroundColor: Colors.white,
     borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  cardAccent: {
+    height: 4,
+    backgroundColor: '#FF8C00',
+  },
+  formCardInner: {
     padding: Spacing.xl,
   },
   submitButton: {
